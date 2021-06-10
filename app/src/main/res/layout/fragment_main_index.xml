@@ -9,6 +9,6 @@
         android:layout_height="100dp"
         android:gravity="center"
         android:textSize="50dp"
-        android:text="个人"/>
+        android:text="首页"/>
 
 </LinearLayout>

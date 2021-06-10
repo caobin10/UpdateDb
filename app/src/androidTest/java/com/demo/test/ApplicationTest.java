@@ -1,4 +1,4 @@
-package com.datab.cn;
+package com.demo.test;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

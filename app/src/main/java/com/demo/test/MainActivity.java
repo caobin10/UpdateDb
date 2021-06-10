@@ -1,14 +1,14 @@
-package com.datab.cn;
+package com.demo.test;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.datab.cn.fragment.IndexFragment;
-import com.datab.cn.fragment.NewMsgFragment;
-import com.datab.cn.fragment.ProfileFragment;
-import com.datab.cn.view.NestedRadioGroup;
+import com.demo.test.fragment.IndexFragment;
+import com.demo.test.fragment.NewMsgFragment;
+import com.demo.test.fragment.ProfileFragment;
+import com.demo.test.view.NestedRadioGroup;
 
 /**
  * Created by Administrator on 2018/6/4.

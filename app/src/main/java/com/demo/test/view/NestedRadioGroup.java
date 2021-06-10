@@ -1,4 +1,4 @@
-package com.datab.cn.view;
+package com.demo.test.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

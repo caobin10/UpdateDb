@@ -1,4 +1,4 @@
-package com.datab.cn.fragment;
+package com.demo.test.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.datab.cn.R;
+import com.demo.test.R;
 
 /**
  * Created by Administrator on 2021/6/8.

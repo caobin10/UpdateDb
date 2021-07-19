@@ -1,72 +1,79 @@
 package com.demo.test;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
-import com.demo.test.fragment.IndexFragment;
-import com.demo.test.fragment.NewMsgFragment;
-import com.demo.test.fragment.ProfileFragment;
-import com.demo.test.view.NestedRadioGroup;
-
+import android.widget.TextView;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 /**
  * Created by Administrator on 2018/6/4.
  */
 
-public class MainActivity extends AppCompatActivity
-{
-    private Fragment newMsgFragment;
-    private Fragment indexFragment;
-    private Fragment profileFragment;
+public class MainActivity extends AppCompatActivity {
+    private String DATABASES_DIR = "/storage/emulated/0/com.demo.test/database/";
+    private String DATABASE_NAME = "test.db";
+    private TextView textView;
+    private File mypath;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        init();
+        textView = (TextView) findViewById(R.id.tv);
+        copyDatabaseFile(this, true);
+        //模糊查询数据
+        queryData();
     }
-    public void init(){
-        newMsgFragment=new NewMsgFragment();
-        FragmentTransaction transaction=getFragmentManager().beginTransaction();
-        transaction.add(R.id.container, newMsgFragment, "newMsgFragment");
-        transaction.addToBackStack("newMsgFragment");
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.commit();
 
-        NestedRadioGroup tabBarRg=(NestedRadioGroup) findViewById(R.id.rg_main_tabbar);
-        tabBarRg.setOnCheckedChangeListener(new NestedRadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(NestedRadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rb_new_msg:
-                        if (newMsgFragment == null) {
-                            newMsgFragment = new NewMsgFragment();
-                        }
-                        switchFragment(newMsgFragment, "newMsgFragment");
-                        break;
-                    case R.id.rb_index:
-                        if (indexFragment == null) {
-                            indexFragment = new IndexFragment();
-                        }
-                        switchFragment(indexFragment, "indexFragment");
-                        break;
-                    case R.id.rb_profile:
-                        if (profileFragment == null) {
-                            profileFragment = new ProfileFragment();
-                        }
-                        switchFragment(profileFragment, "profileFragment");
-                        break;
-                    default:
-                        break;
-                }
+    private void copyDatabaseFile(Context context, boolean isfored) {
+        File dir = new File(DATABASES_DIR);
+        if (!dir.exists() || isfored) {
+            try {
+                dir.mkdirs();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        });
+        }
+        mypath = new File(dir, DATABASE_NAME);
+        if (mypath.exists() && !isfored) {
+            return;
+        }
+        try {
+            if (mypath.exists()) {
+                mypath.delete();
+            }
+            mypath.createNewFile();
+            InputStream in = context.getAssets().open(DATABASE_NAME);
+            int size = in.available();
+            byte buf[] = new byte[size];
+            in.read(buf);
+            in.close();
+            FileOutputStream out = new FileOutputStream(mypath);
+            out.write(buf);
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    public void switchFragment(Fragment fragment,String tag){
-        FragmentTransaction transaction=getFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, fragment, tag);
-        transaction.addToBackStack(tag);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.commit();
+
+    //模糊查询数据
+    private void queryData() {
+        SQLiteDatabase dBase = SQLiteDatabase.openOrCreateDatabase(mypath, null);
+        try {
+            Cursor cursor = dBase.rawQuery("Select * from testbiao where id= ?",
+                    new String[]{"1"});
+            String name = null;
+            if (cursor.moveToFirst()) {
+                name = cursor.getString(cursor.getColumnIndex("name"));
+            }
+            textView.setText("name:" + name);
+            cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
